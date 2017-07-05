@@ -5009,12 +5009,27 @@ If gRefacciones Then
         End If
         Call SetStatusBarText("Disponible en Almacen :" & Almac & " :" & Str(Dispo), "ToolTipText")
         
+		'--- Valida Ubicacion por default
+			Sqlst2 = " SELECT L.WHSELOC FROM LOCATION L join LocTable lt on l.SiteID = lt.SiteID and l.WhseLoc = lt.WhseLoc WHERE L.INVTID = " & Sparm(InveId) & " AND L.SITEID = " & Sparm(Almac) & " and lt.InclQtyAvail = 1 and (l.QtyAvail + l.QtyAlloc * (1-0) + l.QtyAllocSO * (1-0)) > 0"
+			serr13 = SqlFetch1(c13, Sqlst2, bUbica, LenB(bUbica))
+			If serr13 = 0 Then
+					sivMyApp.Controls("cwhSeloc_1") = bUbica.whseloc
+				  
+			Else
+			Sqlst2 = "Select itemsite.DfltPickBin from itemsite where InvtId = " & Sparm(InveId) & " and siteid = " & Sparm(Almac)
+				serr3 = SqlFetch1(c3, Sqlst2, bUbica, LenB(bUbica))
+				  If serr3 = 0 Then
+					sivMyApp.Controls("cwhSeloc_1") = bUbica.whseloc
+				  End If
+			End If
+		'--- Fin Valida Ubicacion
+		
 '--- Valida Ubicacion por default
-        Sqlst2 = "Select itemsite.DfltPickBin from itemsite where InvtId = " & Sparm(InveId) & " and siteid = " & Sparm(Almac)
-        serr3 = SqlFetch1(c3, Sqlst2, bUbica, LenB(bUbica))
-        If serr3 = 0 Then
-              sivMyApp.Controls("cwhSeloc_1") = bUbica.whseloc
-        End If
+       ' Sqlst2 = "Select itemsite.DfltPickBin from itemsite where InvtId = " & Sparm(InveId) & " and siteid = " & Sparm(Almac)
+        'serr3 = SqlFetch1(c3, Sqlst2, bUbica, LenB(bUbica))
+        'If serr3 = 0 Then
+         '     sivMyApp.Controls("cwhSeloc_1") = bUbica.whseloc
+        'End If
 '--- Fin Valida Ubicacion
      
     
